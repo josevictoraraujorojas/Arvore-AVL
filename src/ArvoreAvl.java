@@ -4,22 +4,22 @@ import java.util.Queue;
 
 public class ArvoreAvl {
     public class Nodo{
-        Object item;
+        Cliente cliente;
         Nodo pai;
         Nodo esquerda;
         Nodo direita;
         int fatorBalanceamento;
 
-        public Nodo(Object item) {
-            this.item = item;
+        public Nodo(Cliente cliente) {
+            this.cliente = cliente;
         }
 
-        public Object getItem() {
-            return item;
+        public Object getCliente() {
+            return cliente;
         }
 
-        public void setItem(Object item) {
-            this.item = item;
+        public void setCliente(Cliente cliente) {
+            this.cliente = cliente;
         }
 
         public Nodo getEsquerda() {
@@ -59,8 +59,8 @@ public class ArvoreAvl {
         this.raiz = null;
     }
 
-    public void inserir(Object item) {
-        this.raiz = insere(item,null ,raiz);
+    public void inserir(Cliente cliente) {
+        this.raiz = insere(cliente,null ,raiz);
         System.out.println("----------------Arvore antes do balanceamento--------------------");
         imprimiArvoreOrdem();
         this.raiz = balanceia(raiz);
@@ -68,23 +68,23 @@ public class ArvoreAvl {
         imprimiArvoreOrdem();
     }
 
-    private Nodo insere(Object item,Nodo pai, Nodo p) {
+    private Nodo insere(Cliente cliente,Nodo pai, Nodo p) {
 
         if (p == null) {
             // Cria um novo Nodo e o retorna
-            Nodo novo = new Nodo(item);
+            Nodo novo = new Nodo(cliente);
             novo.setPai(pai);
             return novo;
-        } else if ((int)item <(int) p.item) {
+        } else if ((int)cliente.getCodigo() <(int) p.cliente.getCodigo()) {
             // Insere na subárvore esquerda
 
-            p.esquerda = insere(item, p,p.esquerda);
+            p.esquerda = insere(cliente, p,p.esquerda);
 
 
-        } else if ((int)item >(int) p.item) {
+        } else if ((int)cliente.getCodigo() >(int) p.cliente.getCodigo()) {
             // Insere na subárvore direita
 
-            p.direita = insere(item, p,p.direita);
+            p.direita = insere(cliente, p,p.direita);
 
 
         }
@@ -97,13 +97,13 @@ public class ArvoreAvl {
         return p;
     }
 
-    public  void retirar(Object item) {
-        this.raiz = retirar(item, raiz);
+    public  void retirar(int codigo) {
+        this.raiz = retirar(codigo, raiz);
 
         System.out.println("------------antes de balancear--------------");
         imprimiArvoreOrdem();
 
-
+        if (raiz != null)
         this.raiz = balanceia(raiz);
 
         System.out.println("------------dps de balancear--------------");
@@ -111,15 +111,15 @@ public class ArvoreAvl {
 
 
     }
-    private Nodo retirar(Object item, Nodo p) {
+    private Nodo retirar(int codigo, Nodo p) {
         if (p == null) {
             return null; // Nó não encontrado
-        } else if ((int) item < (int) p.item) {
+        } else if ((int) codigo < (int) p.cliente.getCodigo()) {
             // O item está na subárvore esquerda
-            p.esquerda = retirar(item, p.esquerda);
-        } else if ((int) item > (int) p.item) {
+            p.esquerda = retirar(codigo, p.esquerda);
+        } else if ((int) codigo > (int) p.cliente.getCodigo()) {
             // O item está na subárvore direita
-            p.direita = retirar(item, p.direita);
+            p.direita = retirar(codigo, p.direita);
         } else {
             // O item é igual ao item do nó atual (nó a ser removido encontrado)
             if (p.esquerda == null && p.direita == null) {
@@ -150,7 +150,7 @@ public class ArvoreAvl {
         if(r.direita!=null){
             r.direita=encontrarAntecessor(q, r.direita);
         }else {
-            q.item=r.item;
+            q.cliente=r.cliente;
             r=r.esquerda;
         }
         return r;
@@ -165,7 +165,7 @@ public class ArvoreAvl {
             return;
         }
         imprimiArvoreOrdem(p.esquerda); // Visita a subárvore esquerda
-        System.out.println("valor item:"+p.item + " fb:"+p.fatorBalanceamento); // Imprime o item do nó atual
+        System.out.println("valor item:"+p.cliente.getNome() + " fb:"+p.fatorBalanceamento); // Imprime o item do nó atual
         imprimiArvoreOrdem(p.direita); // Visita a subárvore direita
     }
 
@@ -179,24 +179,24 @@ public class ArvoreAvl {
         }
         imprimiArvorePosfixa(p.esquerda); // Visita a subárvore esquerda
         imprimiArvorePosfixa(p.direita); // Visita a subárvore direita
-        System.out.println(p.item); // Imprime o item do nó atual
+        System.out.println(p.cliente.getCodigo()); // Imprime o item do nó atual
     }
 
-    public Object busca(Object item){
-        return  busca(item, this.raiz);
+    public Object busca(int codigo){
+        return  busca(codigo, this.raiz);
     }
-    private Object busca(Object item, Nodo p) {
+    private Object busca(int codigo, Nodo p) {
         if (p == null) {
             return null; // Item não encontrado
-        } else if ((int)item <(int) p.item) {
+        } else if ((int)codigo <(int) p.cliente.getCodigo()) {
             // Item é menor, buscar na subárvore esquerda
-            return busca(item, p.esquerda);
-        } else if ((int)item >(int) p.item) {
+            return busca(codigo, p.esquerda);
+        } else if ((int)codigo >(int) p.cliente.getCodigo()) {
             // Item é maior, buscar na subárvore direita
-            return busca(item, p.direita);
+            return busca(codigo, p.direita);
         } else {
             // Item encontrado
-            return p.item;
+            return p.cliente;
         }
     }
 
@@ -208,7 +208,7 @@ public class ArvoreAvl {
 
         while (!fila.isEmpty()) {
             Nodo n = fila.poll();
-            System.out.print(n.item + " ");
+            System.out.print(n.cliente.getCodigo()+ " ");
 
             if (n.esquerda != null) {
                 fila.add(n.esquerda);
