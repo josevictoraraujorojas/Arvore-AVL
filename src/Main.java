@@ -17,9 +17,7 @@ public class Main {
         arvore.inserir(cliente4);
         arvore.inserir(cliente5);
 
-        arvore.retirar(10);
-        arvore.retirar(1);
-        arvore.retirar(2);
+
 
 
 

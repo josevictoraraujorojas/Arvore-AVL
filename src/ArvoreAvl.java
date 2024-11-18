@@ -296,34 +296,46 @@ public class ArvoreAvl {
         return aux2;
     }
 
-    public Nodo balanceia(Nodo atual) {//Recebe como parâmetro a raiz
-        /*Se o nó atual tiver FB=2 e o seu filho da esquerda dele tiver Fb>=0,
-         troca o valor dele pelo resultado da rotação a direita com ele*/
+    public Nodo balanceia(Nodo atual) {
+        // Caso 1: O nó está desbalanceado para a esquerda (FB = 2)
+        // E o filho esquerdo do nó também está balanceado ou ligeiramente desbalanceado para a esquerda (FB >= 0)
         if (atual.getFatorBalanceamento() == 2 && atual.getEsquerda().getFatorBalanceamento() >= 0) {
+            // Realiza uma rotação simples à direita para balancear o nó
             atual = rotacaoADireita(atual);
-            /* Senão se o nó atual tiver FB=-2 e o filho da direita dele tiver Fb<0,
-             troca o valor dele pelo resultado da rotação a esquerda com ele*/
-        } else if (atual.getFatorBalanceamento() == -2 && atual.getDireita().fatorBalanceamento <= 0) { //mudat dps
+        }
+        // Caso 2: O nó está desbalanceado para a direita (FB = -2)
+        // E o filho direito do nó também está balanceado ou ligeiramente desbalanceado para a direita (FB <= 0)
+        else if (atual.getFatorBalanceamento() == -2 && atual.getDireita().getFatorBalanceamento() <= 0) {
+            // Realiza uma rotação simples à esquerda para balancear o nó
             atual = rotacaoAEsquerda(atual);
-            /*Senão se o nó atual tiver FB=2 e o filho da esquerda dele tiver Fb<0,
-             troca o valor dele pelo resultado da rotação dupla a direita com ele*/
-        } else if (atual.getFatorBalanceamento() == 2 && atual.getEsquerda().getFatorBalanceamento() < 0) {
+        }
+        // Caso 3: O nó está desbalanceado para a esquerda (FB = 2)
+        // E o filho esquerdo está desbalanceado para a direita (FB < 0), o que exige uma rotação dupla
+        else if (atual.getFatorBalanceamento() == 2 && atual.getEsquerda().getFatorBalanceamento() < 0) {
+            // Realiza uma rotação dupla à direita (primeiro à esquerda, depois à direita) para balancear o nó
             atual = rotacaoDuplaDireita(atual);
-            /*Senão se o nó atual tiver FB=-2 e o filho da direita dele tiver Fb>0,
-             troca o valor dele pelo resultado da rotação dupla a esquerda com ele*/
-        } else if (atual.getFatorBalanceamento() == -2 && atual.getDireita().getFatorBalanceamento() > 0) {
+        }
+        // Caso 4: O nó está desbalanceado para a direita (FB = -2)
+        // E o filho direito está desbalanceado para a esquerda (FB > 0), o que exige uma rotação dupla
+        else if (atual.getFatorBalanceamento() == -2 && atual.getDireita().getFatorBalanceamento() > 0) {
+            // Realiza uma rotação dupla à esquerda (primeiro à direita, depois à esquerda) para balancear o nó
             atual = rotacaoDuplaEsquerda(atual);
         }
-        /*Nessa parte aqui a recursão vai procurar por mais nós desbalanceados*/
-        if (atual.getDireita() != null) {
-            balanceia(atual.getDireita());
-        }
-        if (atual.getEsquerda() != null) {
-            balanceia(atual.getEsquerda());
-        }
-        return atual; //Retorna a nova raiz com seus filhotes balanceados
-    }
 
+        // Após ajustar o nó atual, verificamos os filhos (recursivamente) para garantir que toda a árvore esteja balanceada
+        // Se o nó atual tiver um filho à direita, balanceamos recursivamente a subárvore à direita
+        if (atual.getDireita() != null) {
+            atual.setDireita(balanceia(atual.getDireita()));
+        }
+
+        // Se o nó atual tiver um filho à esquerda, balanceamos recursivamente a subárvore à esquerda
+        if (atual.getEsquerda() != null) {
+            atual.setEsquerda(balanceia(atual.getEsquerda()));
+        }
+
+        // Retorna o nó atual balanceado
+        return atual;
+    }
 
 
     public Nodo getRaiz() {
