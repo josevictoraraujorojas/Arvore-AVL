@@ -95,72 +95,53 @@ public class ArvoreAvl {
         return p;
     }
 
-    public  void retirar(int codigo) {
+    public void retirar(int codigo) {
         this.raiz = retirar(codigo, raiz);
     }
+
     private Nodo retirar(int codigo, Nodo p) {
         if (p == null) {
-            return null; // Nó não encontrado
+            return null; // Nó não encontrado.
         }
 
-        if ((int) codigo < (int) p.cliente.getCodigo()) {
-            // O item está na subárvore esquerda
+        if (codigo < (int) p.cliente.getCodigo()) {
+            // O item está na subárvore esquerda.
             p.esquerda = retirar(codigo, p.esquerda);
-            if (p.esquerda != null) {
-                p.esquerda.setPai(p); // Atualiza o pai da subárvore esquerda
-            }
-        } else if ((int) codigo > (int) p.cliente.getCodigo()) {
-            // O item está na subárvore direita
+        } else if (codigo > (int) p.cliente.getCodigo()) {
+            // O item está na subárvore direita.
             p.direita = retirar(codigo, p.direita);
-            if (p.direita != null) {
-                p.direita.setPai(p); // Atualiza o pai da subárvore direita
-            }
         } else {
-            // Nó encontrado
+            // Nó encontrado.
             if (p.esquerda == null && p.direita == null) {
-                // Caso 1: Nó sem filhos
+                // Caso 1: Nó sem filhos.
                 return null;
             } else if (p.esquerda == null) {
-                // Caso 2: Nó com um filho à direita
-                p.direita.setPai(p.pai);
+                // Caso 2: Nó com um filho à direita.
                 return p.direita;
             } else if (p.direita == null) {
-                // Caso 2: Nó com um filho à esquerda
-                p.esquerda.setPai(p.pai);
+                // Caso 2: Nó com um filho à esquerda.
                 return p.esquerda;
             } else {
-                // Caso 3: Nó com dois filhos
-                Nodo antecessor = encontrarAntecessor(p, p.esquerda);
-                p.cliente = antecessor.cliente; // Substitui o valor do nó pelo do antecessor
-                p.esquerda = retirar((int) antecessor.cliente.getCodigo(), p.esquerda); // Remove o antecessor
-                if (p.esquerda != null) {
-                    p.esquerda.setPai(p); // Atualiza o pai da subárvore esquerda
-                }
+                // Caso 3: Nó com dois filhos.
+                Nodo antecessor = encontrarAntecessor(p.esquerda);
+                p.cliente = antecessor.cliente; // Substitui pelo antecessor.
+                p.esquerda = retirar((int) antecessor.cliente.getCodigo(), p.esquerda);
             }
         }
 
-        // Atualiza o fator de balanceamento e aplica o balanceamento
+        // Atualiza o fator de balanceamento e aplica o balanceamento.
         if (p != null) {
             defineFB(p);
             p = balanceia(p);
         }
         return p;
     }
-    private Nodo encontrarAntecessor(Nodo pai, Nodo atual) {
-        // O antecessor é o maior valor na subárvore à esquerda
-        if (atual.direita != null) {
-            atual.direita = encontrarAntecessor(atual, atual.direita);
-            if (atual.direita != null) {
-                atual.direita.setPai(atual); // Atualiza o pai do filho direito
-            }
-        } else {
-            // Encontramos o maior elemento (o antecessor)
-            if (atual.esquerda != null) {
-                atual.esquerda.setPai(pai); // Atualiza o pai do nó esquerdo
-            }
-            return atual.esquerda; // Retorna o filho esquerdo para substituição
+    private Nodo encontrarAntecessor(Nodo atual) {
+        // O antecessor é o maior valor na subárvore esquerda.
+        while (atual.direita != null) {
+            atual = atual.direita;
         }
-        return atual;
+        return atual; // Retorna o maior valor.
     }
 
 

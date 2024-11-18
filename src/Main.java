@@ -17,6 +17,12 @@ public class Main {
         arvore.inserir(cliente4);
         arvore.inserir(cliente5);
 
+        arvore.retirar(10);
+        arvore.retirar(1);
+        arvore.retirar(2);
+
+
+
         Cliente cli = (Cliente) arvore.busca(11);
 
         System.out.println(cli.nome);
