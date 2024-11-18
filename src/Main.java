@@ -8,7 +8,7 @@ public class Main {
         Cliente cliente3 = new Cliente(1,"dany","24","34618262","rua 2");
         Cliente cliente4 = new Cliente(2,"dany","24","34618262","rua 2");
         Cliente cliente5 = new Cliente(9,"dany","24","34618262","rua 2");
-
+//
 
         arvore.inserir(cliente);
         arvore.inserir(cliente1);
