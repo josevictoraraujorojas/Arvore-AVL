@@ -1,6 +1,6 @@
-
-import java.util.LinkedList;
-import java.util.Queue;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArvoreAvl {
     public class Nodo{
@@ -55,15 +55,67 @@ public class ArvoreAvl {
         }
     }
     private Nodo raiz;
-    public ArvoreAvl() {
+    private  String caminho;
+    public ArvoreAvl(String caminho) throws IOException {
         this.raiz = null;
+        this.caminho = caminho;
+        criarArvoreArquivo();
     }
 
-    public void inserir(Cliente cliente) {
-        this.raiz = insere(cliente,null ,raiz);
+    public void criarArvoreArquivo() throws IOException {
+        BufferedReader ler = new BufferedReader(new FileReader(caminho));
+        String linha = "";
+
+        while (linha != null) {
+            linha = ler.readLine();
+            if (linha != null && !linha.equals("")) {
+                String[] substrings = linha.split("-");
+                Cliente cliente = new Cliente(Integer.parseInt(substrings[0]),substrings[1],substrings[2],substrings[3],substrings[4]);
+                inserir(cliente,false);
+            }
+        }
+        ler.close();
     }
 
-    private Nodo insere(Cliente cliente,Nodo pai, Nodo p) {
+    public void ecreveArquivo(Cliente cliente) throws IOException {
+        String linha="";
+        BufferedWriter escreve = new BufferedWriter(new FileWriter(this.caminho,true));
+
+        linha+=cliente.getCodigo()+"-"+cliente.getNome()+'-'+cliente.getData()+'-'+cliente.getTelefone()+'-'+cliente.getEndereco();
+        escreve.write(linha+"\n");
+        escreve.close();
+    }
+
+    public void excluirLinha(int codigo) throws IOException {
+        File arquivo = new File(this.caminho);
+
+        List<String> linhas = new ArrayList<>();
+        try (BufferedReader leitor = new BufferedReader(new FileReader(arquivo))) {
+            String linha;
+            while ((linha = leitor.readLine()) != null) {
+                linhas.add(linha);
+            }
+        }
+
+        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(arquivo))) {
+            for (String linha : linhas) {
+                int codigoLinha = Integer.parseInt(linha.substring(0, linha.indexOf("-")));
+
+                if (codigoLinha != codigo) {
+                    escritor.write(linha);
+                    escritor.newLine();
+                }
+            }
+        }
+    }
+
+    public void inserir(Cliente cliente,boolean escrever) throws IOException {
+        this.raiz = insere(cliente,null ,raiz,escrever);
+    }
+
+
+
+    private Nodo insere(Cliente cliente,Nodo pai, Nodo p, boolean escrever) throws IOException {
 
         if (p == null) {
             // Cria um novo Nodo e o retorna
@@ -71,17 +123,22 @@ public class ArvoreAvl {
             novo.setPai(pai);
             novo.setEsquerda(null);
             novo.setDireita(null);
+            if (escrever) {
+                ecreveArquivo(cliente);
+            }
+
+
             return novo;
         } else if ((int)cliente.getCodigo() <(int) p.cliente.getCodigo()) {
             // Insere na subárvore esquerda
 
-            p.esquerda = insere(cliente, p,p.esquerda);
+            p.esquerda = insere(cliente, p,p.esquerda,escrever);
 
 
         } else if ((int)cliente.getCodigo() >(int) p.cliente.getCodigo()) {
             // Insere na subárvore direita
 
-            p.direita = insere(cliente, p,p.direita);
+            p.direita = insere(cliente, p,p.direita,escrever);
 
 
         }
@@ -95,11 +152,11 @@ public class ArvoreAvl {
         return p;
     }
 
-    public void retirar(int codigo) {
+    public void retirar(int codigo) throws IOException {
         this.raiz = retirar(codigo, raiz);
     }
 
-    private Nodo retirar(int codigo, Nodo p) {
+    private Nodo retirar(int codigo, Nodo p) throws IOException {
         if (p == null) {
             return null; // Nó não encontrado.
         }
@@ -114,12 +171,15 @@ public class ArvoreAvl {
             // Nó encontrado.
             if (p.esquerda == null && p.direita == null) {
                 // Caso 1: Nó sem filhos.
+                excluirLinha(codigo);
                 return null;
             } else if (p.esquerda == null) {
                 // Caso 2: Nó com um filho à direita.
+                excluirLinha(codigo);
                 return p.direita;
             } else if (p.direita == null) {
                 // Caso 2: Nó com um filho à esquerda.
+                excluirLinha(codigo);
                 return p.esquerda;
             } else {
                 // Caso 3: Nó com dois filhos.
@@ -127,6 +187,7 @@ public class ArvoreAvl {
                 p.cliente = antecessor.cliente; // Substitui pelo antecessor.
                 p.esquerda = retirar((int) antecessor.cliente.getCodigo(), p.esquerda);
             }
+
         }
 
         // Atualiza o fator de balanceamento e aplica o balanceamento.
@@ -157,18 +218,7 @@ public class ArvoreAvl {
         imprimiArvoreOrdem(p.direita); // Visita a subárvore direita
     }
 
-    public void imprimiArvorePosfixa(){
-        imprimiArvorePosfixa(this.raiz);
-    }
 
-    private void imprimiArvorePosfixa(Nodo p) {
-        if (p == null) {
-            return;
-        }
-        imprimiArvorePosfixa(p.esquerda); // Visita a subárvore esquerda
-        imprimiArvorePosfixa(p.direita); // Visita a subárvore direita
-        System.out.println(p.cliente.getCodigo()); // Imprime o item do nó atual
-    }
 
     public Object busca(int codigo){
         return  busca(codigo, this.raiz);
@@ -188,25 +238,7 @@ public class ArvoreAvl {
         }
     }
 
-    public void buscaLargura() {
-        if (raiz == null) return;
 
-        Queue<Nodo> fila = new LinkedList<>();
-        fila.add(raiz);
-
-        while (!fila.isEmpty()) {
-            Nodo n = fila.poll();
-            System.out.print(n.cliente.getCodigo()+ " ");
-
-            if (n.esquerda != null) {
-                fila.add(n.esquerda);
-            }
-            if (n.direita != null) {
-                fila.add(n.direita);
-            }
-        }
-        System.out.println();
-    }
 
     public int altura(Nodo atual) {//Verifica a altura de um determinado nó
         if (atual == null) {//Se o nó for nulo, sua altura será 0
@@ -216,7 +248,7 @@ public class ArvoreAvl {
         if (atual.getDireita() == null && atual.getEsquerda() == null) {//Se ele não tiver nenhum filho, sua altura será 1
             return 1;
         } else if (atual.getEsquerda() == null) {//Se o nó tiver apenas um filho, sua altura será 1 + a altura do nó filho
-            System.out.println(atual.cliente.nome);
+
             return 1 + altura(atual.getDireita());
         } else if (atual.getDireita() == null) { //Mesma do passo anterior aqui
             return 1 + altura(atual.getEsquerda());
@@ -241,14 +273,14 @@ public class ArvoreAvl {
 
     public Nodo rotacaoADireita(Nodo atual) {
         Nodo aux = atual.getEsquerda(); //Armazena o valor do nó da esquerda do atual
-        aux.setPai(atual.getPai());
-        if (aux.getDireita() != null) {//tratamento para quando a árvore é degenerada
+        aux.setPai(atual.getPai());  //atribui o valor do pai do atual para o aux
+        if (aux.getDireita() != null) {// para o filho a direta de aux colocamos que seu pai e o no atual
             aux.getDireita().setPai(atual);
         }
-        atual.setPai(aux);
-        atual.setEsquerda(aux.getDireita());//Joga o valor da direita do nó da esquerda do atual, na esquerda do atual
-        aux.setDireita(atual);//troca o valor da direita do nó da esquerda pelo atual
-        if (aux.getPai() != null) {//Se aux não for a raiz principal, configura o pai pra apontar pro novo nó
+        atual.setPai(aux);  //atribui que aux e pai do atual
+        atual.setEsquerda(aux.getDireita());//Joga o filho da direita de aux, na esquerda do atual
+        aux.setDireita(atual);//troca o valor da direita do aux pelo atual
+        if (aux.getPai() != null) {//Se aux não for a raiz principal, configura o pai pra apontar pra aux
             if (aux.getPai().getDireita() == atual) {
                 aux.getPai().setDireita(aux);
             } else if (aux.getPai().getEsquerda() == atual) {
@@ -261,17 +293,17 @@ public class ArvoreAvl {
 
     //mesma coisa do rotação a direita, só que invertido pra esquerda
     public Nodo rotacaoAEsquerda(Nodo atual) {
-        Nodo aux = atual.getDireita();
-        aux.setPai(atual.getPai());
-        if (aux.getEsquerda() != null) {//tratamento para quando a árvore é degenerada
+        Nodo aux = atual.getDireita(); //Armazena o valor do nó da direita do atual
+        aux.setPai(atual.getPai());  //atribui o valor do pai do atual para o aux
+        if (aux.getEsquerda() != null) {//para o filho a esquerda de aux colocamos que seu pai e o no atual
             aux.getEsquerda().setPai(atual);
         }
 
-        atual.setPai(aux);
-        atual.setDireita(aux.getEsquerda());
-        aux.setEsquerda(atual);
+        atual.setPai(aux); //atribui que aux e pai do atual
+        atual.setDireita(aux.getEsquerda()); //Joga o filho da esquerda de aux, na esquerda do atual
+        aux.setEsquerda(atual);  //troca o valor da esquerda do aux pelo atual
         if (aux.getPai() != null) {
-            if (aux.getPai().getDireita() == atual) {
+            if (aux.getPai().getDireita() == atual) {//Se aux não for a raiz principal, configura o pai pra apontar pra aux
                 aux.getPai().setDireita(aux);
             } else if (aux.getPai().getEsquerda() == atual) {
                 aux.getPai().setEsquerda(aux);
