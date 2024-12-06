@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArvoreAvl {
+
     public class Nodo{
         Cliente cliente;
         Nodo pai;
@@ -242,7 +243,6 @@ public class ArvoreAvl {
 
     public int altura(Nodo atual) {//Verifica a altura de um determinado nó
         if (atual == null) {//Se o nó for nulo, sua altura será 0
-
             return 0;
         }
         if (atual.getDireita() == null && atual.getEsquerda() == null) {//Se ele não tiver nenhum filho, sua altura será 1
