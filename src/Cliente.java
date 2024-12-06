@@ -13,6 +13,7 @@ String endereco;
         this.telefone = telefone;
         this.endereco = endereco;
     }
+    public Cliente() {}
 
     public int getCodigo() {
         return codigo;
@@ -52,5 +53,16 @@ String endereco;
 
     public void setEndereco(String endereco) {
         this.endereco = endereco;
+    }
+
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "codigo=" + codigo +
+                ", nome='" + nome + '\'' +
+                ", data='" + data + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", endereco='" + endereco + '\'' +
+                '}';
     }
 }
