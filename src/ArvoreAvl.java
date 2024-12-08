@@ -4,6 +4,29 @@ import java.util.List;
 
 public class ArvoreAvl {
 
+    /*
+    Alunos: José Victor Araújo Rojas, Leonan Damasceno e Maysa Santos
+    Disciplina: Estrutura de Dados 2
+    Data de Codificação: 08/12/2024
+
+    Objetivo da classe:
+    A classe ArvoreAvl implementa uma Árvore AVL (balanceada) que gerencia os dados de clientes
+    de maneira eficiente. Ela garante o balanceamento da árvore a cada inserção ou remoção,
+    proporcionando operações de busca, inserção e exclusão com complexidade logarítmica.
+    Atributos principais:
+    - Nodo (classe interna): Representa cada nó da árvore, armazenando o cliente, referências
+    para o pai, os filhos esquerdo e direito, além do fator de balanceamento.
+    - raiz: Referência ao nó raiz da árvore.
+    - caminho: Caminho do arquivo usado para persistência dos dados.
+    Funcionalidades principais:
+    - Inserir novos clientes na árvore e persistir os dados no arquivo.
+    - Remover clientes da árvore e do arquivo.
+    - Buscar clientes pelo código.
+    - Imprimir a árvore em ordem, exibindo os fatores de balanceamento para validação.
+    - Rotação simples e dupla (esquerda e direita) para balancear a árvore.
+    - Persistência: Reconstrução da árvore a partir de um arquivo em execuções futuras.
+     */
+
     public class Nodo{
         Cliente cliente;
         Nodo pai;

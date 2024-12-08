@@ -3,6 +3,18 @@ import java.util.Scanner;
 import java.util.StringJoiner;
 
 public class Main {
+    /*
+    Alunos: José Victor Araújo Rojas, Leonan Damasceno e Maysa Santos
+    Disciplina: Estrutura de Dados 2
+    Data de Codificação: 08/12/2024
+    Objetivo da classe: A classe Main é responsável por executar o programa principal que permite manipular uma base de dados de clientes
+     utilizando uma estrutura de dados do tipo Árvore AVL. As principais funcionalidades incluem:
+     - Importar um arquivo contendo os dados iniciais dos clientes.
+     - Inserir novos clientes na árvore.
+     - Remover clientes com base em seus códigos.
+     - Buscar informações de um cliente específico.
+     - Listar todos os clientes em ordem.
+     */
     public static void main(String[] args) throws IOException {
         Scanner ler = new Scanner(System.in);
         System.out.println("Digite o caminho do arquivo txt dos seus clientes:");
