@@ -1,6 +1,6 @@
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.StringJoiner;
+
 
 public class Main {
     /*
@@ -68,7 +68,7 @@ public class Main {
                     try {
                         System.out.println("Digite o codigo do cliente:");
                         int codigo = Integer.parseInt(ler.nextLine());
-                        arvore.retirar(codigo);
+                        arvore.retirar(codigo,true);
                         System.out.println("Cliente removido com sucesso");
                     }catch (Exception e){
                         System.out.println("falha ao remover o cliente");

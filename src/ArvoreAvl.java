@@ -133,6 +133,7 @@ public class ArvoreAvl {
         }
     }
 
+
     public void inserir(Cliente cliente,boolean escrever) throws IOException {
         this.raiz = insere(cliente,null ,raiz,escrever);
     }
@@ -176,40 +177,46 @@ public class ArvoreAvl {
         return p;
     }
 
-    public void retirar(int codigo) throws IOException {
-        this.raiz = retirar(codigo, raiz);
+    public void retirar(int codigo,boolean escrever) throws IOException {
+        this.raiz = retirar(codigo, raiz,escrever);
     }
 
-    private Nodo retirar(int codigo, Nodo p) throws IOException {
+    private Nodo retirar(int codigo, Nodo p,boolean escrever) throws IOException {
         if (p == null) {
             return null; // Nó não encontrado.
         }
 
         if (codigo < (int) p.cliente.getCodigo()) {
             // O item está na subárvore esquerda.
-            p.esquerda = retirar(codigo, p.esquerda);
+            p.esquerda = retirar(codigo, p.esquerda,escrever);
         } else if (codigo > (int) p.cliente.getCodigo()) {
             // O item está na subárvore direita.
-            p.direita = retirar(codigo, p.direita);
+            p.direita = retirar(codigo, p.direita,escrever);
         } else {
             // Nó encontrado.
             if (p.esquerda == null && p.direita == null) {
                 // Caso 1: Nó sem filhos.
-                excluirLinha(codigo);
+                if (escrever==true) {
+                    excluirLinha(codigo);
+                }
                 return null;
             } else if (p.esquerda == null) {
                 // Caso 2: Nó com um filho à direita.
-                excluirLinha(codigo);
+                if (escrever==true) {
+                    excluirLinha(codigo);
+                }
                 return p.direita;
             } else if (p.direita == null) {
                 // Caso 2: Nó com um filho à esquerda.
-                excluirLinha(codigo);
+                if (escrever==true) {
+                    excluirLinha(codigo);
+                }
                 return p.esquerda;
             } else {
                 // Caso 3: Nó com dois filhos.
                 Nodo antecessor = encontrarAntecessor(p.esquerda);
                 p.cliente = antecessor.cliente; // Substitui pelo antecessor.
-                p.esquerda = retirar((int) antecessor.cliente.getCodigo(), p.esquerda);
+                p.esquerda = retirar((int) antecessor.cliente.getCodigo(), p.esquerda,escrever);
             }
 
         }
